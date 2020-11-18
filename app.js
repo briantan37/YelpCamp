@@ -29,6 +29,12 @@ app.get('/campgrounds', async (req, res) => {
     res.render('campgrounds/index', {allCamps});
 });
 
+app.get('/campgrounds/:id', async (req, res) => {
+    const camp = await Campground.findById(req.params.id);
+    //console.log(camp);
+    res.render('campgrounds/show', {camp});
+});
+
 app.get('/makecampground', async (req, res) => {
     const camp = new Campground({title: 'Yosemite', price: '$200', description: 'Camp at Yosemite!', location: 'Yosemite, CA'});
     await camp.save();

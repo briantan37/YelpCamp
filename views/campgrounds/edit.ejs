@@ -2,10 +2,17 @@
 <div class="row">
 	<h1 class="text-center">Edit Campground</h1>
 	<div class="col-6 offset-3">
-		<form method="POST" action="/campgrounds/<%= camp._id %>?_method=PUT">
+		<form method="POST" action="/campgrounds/<%= camp._id %>?_method=PUT" class="validateForm" novalidate>
 			<div class="mb-3">
 				<label for="title" class="form-label">Title</label>
-				<input type="text" id="title" name="campground[title]" class="form-control" value="<%= camp.title %>" />
+				<input
+					type="text"
+					id="title"
+					name="campground[title]"
+					class="form-control"
+					value="<%= camp.title %>"
+					required
+				/>
 			</div>
 			<div class="mb-3">
 				<label for="location" class="form-label">Location</label>
@@ -15,11 +22,19 @@
 					name="campground[location]"
 					class="form-control"
 					value="<%= camp.location %>"
+					required
 				/>
 			</div>
 			<div class="mb-3">
 				<label for="image" class="form-label">Image URL</label>
-				<input type="text" id="image" name="campground[image]" class="form-control" value="<%= camp.image %>" />
+				<input
+					type="text"
+					id="image"
+					name="campground[image]"
+					class="form-control"
+					value="<%= camp.image %>"
+					required
+				/>
 			</div>
 			<div class="mb-3">
 				<label for="price" class="form-label">Campground Price</label>
@@ -34,12 +49,13 @@
 						aria-describedby="price-label"
 						name="campground[price]"
 						value="<%= camp.price %>"
+						required
 					/>
 				</div>
 			</div>
 			<div class="mb-3">
 				<label for="description" class="form-label">Description</label>
-				<textarea type="text" id="description" name="campground[description]" class="form-control" rows="3">
+				<textarea type="text" id="description" name="campground[description]" class="form-control" rows="3" required>
 <%=camp.description%></textarea
 				>
 			</div>

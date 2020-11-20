@@ -25,5 +25,29 @@
 			integrity="sha384-t6I8D5dJmMXjCsRLhSzCltuhNZg6P10kE0m0nAncLUjH6GeYLhRU1zfLoW3QNQDF"
 			crossorigin="anonymous"
 		></script>
+		<script>
+			// Example starter JavaScript for disabling form submissions if there are invalid fields
+			(function () {
+				"use strict";
+
+				// Fetch all the forms we want to apply custom Bootstrap validation styles to
+				var forms = document.querySelectorAll(".validateForm");
+
+				// Loop over them and prevent submission
+				Array.from(forms).forEach(function (form) {
+					form.addEventListener(
+						"submit",
+						function (event) {
+							if (!form.checkValidity()) {
+								event.preventDefault();
+								event.stopPropagation();
+							}
+							form.classList.add("was-validated");
+						},
+						false
+					);
+				});
+			})();
+		</script>
 	</body>
 </html>

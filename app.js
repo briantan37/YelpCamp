@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const methodOverride = require('method-override');
+
 const app = express();
 const Campground = require('./models/campground');
 
@@ -8,6 +10,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -38,7 +41,8 @@ app.get('/campgrounds/new', (req, res) => {
 app.post('/campgrounds', async (req, res) => {
     const camp = new Campground(req.body.campground);
     await camp.save();
-    res.redirect(`/campground/${camp._id}`);
+    console.log(`Inserted camp to the database : ${camp}`);
+    res.redirect(`/campgrounds/${camp._id}`);
 });
 
 app.get('/campgrounds/:id', async (req, res) => {
@@ -47,13 +51,17 @@ app.get('/campgrounds/:id', async (req, res) => {
     res.render('campgrounds/show', {camp});
 });
 
+app.get('/campgrounds/:id/edit', async (req, res) => {
+    const camp = await Campground.findById(req.params.id);
+    res.render('campgrounds/edit', {camp});
+})
 
-app.get('/makecampground', async (req, res) => {
-    const camp = new Campground({title: 'Yosemite', price: '$200', description: 'Camp at Yosemite!', location: 'Yosemite, CA'});
-    await camp.save();
-    res.send(camp);
-});
-
+app.put('/campgrounds/:id', async (req, res) => {
+    const { id } = req.params;
+    const camp = await Campground.findByIdAndUpdate(id, {...req.body.campground});
+    //console.log(camp);
+    res.redirect(`/campgrounds/${camp._id}`);
+})
 
 app.listen(3000, () => {
     console.log('Server live on port 3000');

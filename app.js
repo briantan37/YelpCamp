@@ -5,10 +5,11 @@ const morgan = require("morgan");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const Campground = require("./models/campground");
 const { campgroundSchema } = require("./schemas");
 
 const methodOverride = require("method-override");
+const Review = require("./models/review");
+const Campground = require("./models/campground");
 
 const app = express();
 
@@ -105,6 +106,18 @@ app.delete(
 		const { id } = req.params;
 		const camp = await Campground.findByIdAndDelete(id);
 		res.redirect("/campgrounds");
+	})
+);
+
+app.post(
+	"/campgrounds/:id/reviews",
+	catchAsync(async (req, res, next) => {
+		const camp = await Campground.findById(req.params.id);
+		const review = new Review(req.body.review);
+		camp.reviews.push(review);
+		await review.save();
+		await camp.save();
+		res.redirect(`/campgrounds/${camp._id}`);
 	})
 );
 

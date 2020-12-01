@@ -54,6 +54,8 @@ db.once("open", function () {
 	console.log("Database connection established");
 });
 
+mongoose.set("useFindAndModify", false);
+
 app.get("/", (req, res) => {
 	res.render("home");
 });
@@ -78,7 +80,7 @@ app.post(
 		//if (!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
 		const camp = new Campground(req.body.campground);
 		await camp.save();
-		console.log(`Inserted camp to the database : ${camp}`);
+		//console.log(`Inserted camp to the database : ${camp}`);
 		res.redirect(`/campgrounds/${camp._id}`);
 	})
 );
@@ -87,7 +89,7 @@ app.get(
 	"/campgrounds/:id",
 	catchAsync(async (req, res, next) => {
 		const camp = await Campground.findById(req.params.id).populate("reviews");
-		console.log(camp);
+		//console.log(camp);
 		res.render("campgrounds/show", { camp });
 	})
 );
@@ -106,7 +108,7 @@ app.put(
 	catchAsync(async (req, res, next) => {
 		const { id } = req.params;
 		const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-		console.log(`Update camp to the database : ${camp}`);
+		//console.log(`Update camp to the database : ${camp}`);
 		res.redirect(`/campgrounds/${camp._id}`);
 	})
 );
@@ -124,10 +126,10 @@ app.post(
 	"/campgrounds/:id/reviews",
 	validateReview,
 	catchAsync(async (req, res, next) => {
-		console.log(req.body);
+		//console.log(req.body);
 		const camp = await Campground.findById(req.params.id);
 		const review = new Review(req.body.review);
-		console.log(review);
+		//console.log(review);
 		camp.reviews.push(review);
 		await review.save();
 		await camp.save();

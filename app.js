@@ -3,10 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const ejsMate = require('ejs-mate');
-const catchAsync = require('./utils/catchAsync');
-const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
-const Campground = require('./models/campground');
 const Review = require('./models/review');
 const { campgroundSchema, reviewSchema } = require('./schemas');
 const campgrounds = require('./routes/campgrounds');
@@ -33,15 +30,6 @@ app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map((el) => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-};
 
 const validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
@@ -56,6 +44,7 @@ const validateReview = (req, res, next) => {
 
 //mongoose.set('useFindAndModify', false);
 app.use('/campgrounds', campgrounds);
+
 app.get('/', (req, res) => {
     res.render('home');
 });

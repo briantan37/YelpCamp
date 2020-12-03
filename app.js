@@ -36,9 +36,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/campgrounds', campgrounds);
-app.use('/campgrounds/:id/reviews', reviews);
-
 const sessionConfig = {
     secret: 'Zd2tGB!16QweAAA32=u6pBAzcBdIGM7NZPy^^+-*jz^OLIB7c',
     resave: false,
@@ -55,6 +52,7 @@ app.use(flash());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
+    console.log(res.locals);
     res.locals.error = req.flash('error');
     next();
 });
@@ -62,6 +60,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.render('home');
 });
+
+app.use('/campgrounds', campgrounds);
+app.use('/campgrounds/:id/reviews', reviews);
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));

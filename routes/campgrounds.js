@@ -65,6 +65,7 @@ router.put(
     catchAsync(async (req, res, next) => {
         const { id } = req.params;
         const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+        req.flash('success', 'Successfully updated campground!');
         //console.log(`Update camp to the database : ${camp}`);
         res.redirect(`/campgrounds/${camp._id}`);
     })

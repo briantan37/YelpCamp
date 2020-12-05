@@ -8,6 +8,7 @@ const Campground = require('../models/campground');
 
 const { campgroundSchema } = require('../schemas');
 const { isLoggedIn } = require('../middleware');
+
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
@@ -25,7 +26,7 @@ router.get('/', catchAsync(async (req, res, next) => {
     })
 );
 
-router.get('/new', isLoggedin, (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 });
 

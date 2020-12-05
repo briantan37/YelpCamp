@@ -7,6 +7,9 @@ const morgan = require('morgan');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 const campgrounds = require('./routes/campgrounds');
 const reviews = require('./routes/reviews');
@@ -27,14 +30,14 @@ db.once('open', function () {
 const app = express();
 
 app.engine('ejs', ejsMate);
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(morgan('tiny'));
 
 const sessionConfig = {
     secret: 'Zd2tGB!16QweAAA32=u6pBAzcBdIGM7NZPy^^+-*jz^OLIB7c',
@@ -50,6 +53,13 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     console.log(res.locals);
@@ -57,6 +67,11 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/fakeUser', async (req, res) => {
+    const user = new User({email: 'briantan37@gmail.com', username: 'bt37'})
+    const newUser = await User.register(user, '5upej9sW');
+    res.send(newUser);
+});
 app.get('/', (req, res) => {
     res.render('home');
 });

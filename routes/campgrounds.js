@@ -21,7 +21,6 @@ const validateCampground = (req, res, next) => {
 
 router.get('/', catchAsync(async (req, res, next) => {
         const allCamps = await Campground.find({});
-        //console.log(allCamps);
         res.render('campgrounds/index', { allCamps });
     })
 );
@@ -39,7 +38,8 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 );
 
 router.get('/:id', catchAsync(async (req, res, next) => {
-        const camp = await Campground.findById(req.params.id).populate('reviews');
+        const camp = await (await Campground.findById(req.params.id).populate('reviews').populate('author'));
+        console.log(camp);
         if(!camp) {
             req.flash('error', 'Campground not found!');
             res.redirect('/campgrounds');

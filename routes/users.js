@@ -4,6 +4,10 @@ const users = require('../controllers/users');
 const catchAsync = require('../utils/catchAsync');
 const passport = require('passport');
 
+router.get('/', (req, res) => {
+    res.render('home');
+});
+
 router.route('/register')
     .get(users.renderRegister)
     .post(catchAsync(users.register));

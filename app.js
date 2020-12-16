@@ -18,11 +18,15 @@ const {cspConfig} = require('./csp');
 const ExpressError = require('./utils/ExpressError');
 const User = require('./models/user');
 
+const MongoStore = require('connect-mongo')(session);
+
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+const dbURL = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
+
+mongoose.connect(dbURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -48,7 +52,18 @@ app.use(mongoSanitize());
 
 app.use(morgan('tiny'));
 
+const store = new MongoStore({
+    url: dbURL,
+    secret: 'Zd2tGB!16QweAAA32=u6pBAzcBdIGM7NZPy^^+-*jz^OLIB7c',
+    touchAfter: 24 * 3600,
+})
+
+store.on('error', function(e) => {
+    console.log("Session Store Error");
+});
+
 const sessionConfig = {
+    store,
     name: '__session',
     secret: 'Zd2tGB!16QweAAA32=u6pBAzcBdIGM7NZPy^^+-*jz^OLIB7c',
     resave: false,
